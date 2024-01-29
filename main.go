@@ -5,41 +5,14 @@ import (
     "fmt"
     "bufio"
     "os"
-    "errors"
 )
-
-type Command struct {
-    name string 
-    description string
-    callback func() error 
-}
-
-var commands = map[string]Command{
-    "help" : Command{
-        name : "help",
-        description : "describe pokedex behavior",
-        callback : func() error { 
-            fmt.Println("help command")  
-            return nil
-        },
-    },
-    "exit" : Command {
-        name : "exit",
-        description : "exit the pokedex",
-        callback : func() error { 
-            return errors.New("exit gracefully")
-        },
-    },
-}
-
 
 func prompt() {
     fmt.Printf("pokedex > ")
 }
 
-
 func main() {
-    
+
     scanner := bufio.NewScanner(os.Stdin)
     for prompt(); scanner.Scan(); {
         err := scanner.Err()
@@ -49,16 +22,14 @@ func main() {
             break
         }
         
-        if cmd, ok := commands[input]; ok {
-            fmt.Println("valid command")
+        if cmd, ok := getCommands()[input]; ok {
             stat := cmd.callback()
             if stat != nil {
                 break
             }
         } else {
-            fmt.Println("invalid command")
+            fmt.Println("invalid command enter help for more info")
         }
         prompt()
     }
-    fmt.Printf("\n")
 }
